@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al-Quran App | Download for Android</title>
+  <meta name="description" content="Download the modern, elegant, and ad-free Al-Quran app for Android. High-quality audio recitations, full translations, Qibla compass, and offline reading.">
+  <link rel="icon" type="image/png" href="assets/app_logo.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans & Amiri -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* AppTheme Palette */
+      --primary-green: #0B5D3B;
+      --main-green: #2E9B4F;
+      --light-green: #E8F5E9;
+      --pale-mint: #F4FAF5;
+      
+      --bg-body: #FCFDFC;
+      --bg-surface: #FFFFFF;
+      --bg-card: #FFFFFF;
+      --text-primary: #10231B;
+      --text-secondary: #6B756F;
+      --border-color: #DDE8E0;
+      
+      --badge-bg: #E8F5E9;
+      --badge-text: #0B5D3B;
+
+      --shadow-sm: 0 4px 12px rgba(11, 93, 59, 0.06);
+      --shadow-md: 0 12px 36px rgba(11, 93, 59, 0.12);
+      --shadow-lg: 0 24px 60px rgba(11, 93, 59, 0.18);
+
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg-body: #0D1510;
+      --bg-surface: #152018;
+      --bg-card: #1A2B20;
+      --text-primary: #F0F5F2;
+      --text-secondary: #9BA89E;
+      --border-color: #243B2C;
+      
+      --badge-bg: #1E3A2B;
+      --badge-text: #69D78F;
+
+      --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 12px 36px rgba(0, 0, 0, 0.6);
+      --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.8);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-x: hidden;
+      position: relative;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .arabic-font {
+      font-family: 'Amiri', serif;
+      direction: rtl;
+    }
+
+    /* Ambient Subtle Background Glow */
+    .bg-glow {
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(46, 155, 79, 0.12) 0%, rgba(11, 93, 59, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(50px);
+    }
+
+    [data-theme="dark"] .bg-glow {
+      background: radial-gradient(circle, rgba(46, 155, 79, 0.18) 0%, rgba(11, 93, 59, 0) 70%);
+    }
+
+    /* Header */
+    header {
+      position: relative;
+      z-index: 10;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(252, 253, 252, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    [data-theme="dark"] header {
+      background: rgba(13, 21, 16, 0.75);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary-green), var(--main-green));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 12px rgba(11, 93, 59, 0.25);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+
+    .brand-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--main-green);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-toggle-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .theme-toggle-btn:hover {
+      border-color: var(--main-green);
+      transform: scale(1.05);
+    }
+
+    /* Hero Section */
+    .hero-container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 2.5rem;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 3.5rem;
+      align-items: center;
+      flex: 1;
+    }
+
+    @media (max-width: 960px) {
+      .hero-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 2.5rem 1.5rem;
+        gap: 2.5rem;
+      }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      border: 1px solid rgba(46, 155, 79, 0.2);
+    }
+
+    .hero-badge .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--main-green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.7; }
+    }
+
+    .bismillah {
+      font-size: 1.9rem;
+      color: var(--main-green);
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .hero-title {
+      font-size: 3.25rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1.2px;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-title .highlight {
+      color: var(--main-green);
+      background: linear-gradient(135deg, var(--main-green), var(--primary-green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-lead {
+      font-size: 1.12rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      max-width: 530px;
+    }
+
+    @media (max-width: 960px) {
+      .hero-lead {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    /* Download CTAs */
+    .download-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    @media (max-width: 960px) {
+      .btn-row {
+        justify-content: center;
+      }
+    }
+
+    .btn-primary-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      background: linear-gradient(135deg, var(--main-green), var(--primary-green));
+      color: white;
+      text-decoration: none;
+      padding: 0.95rem 1.75rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 1.05rem;
+      box-shadow: 0 10px 28px rgba(11, 93, 59, 0.28);
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary-download:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 36px rgba(11, 93, 59, 0.4);
+    }
+
+    .btn-primary-download svg {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .btn-text-block {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      line-height: 1.2;
+    }
+
+    .btn-text-block .sub-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      opacity: 0.9;
+      letter-spacing: 0.4px;
+    }
+
+    .size-tag {
+      background: rgba(255, 255, 255, 0.25);
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: 6px;
+      margin-left: 5px;
+      font-weight: 800;
+    }
+
+    /* Architecture Dropdown Button */
+    .arch-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .btn-dropdown-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 0.95rem 1.35rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-dropdown-trigger:hover {
+      border-color: var(--main-green);
+      background: var(--pale-mint);
+      transform: translateY(-2px);
+    }
+
+    [data-theme="dark"] .btn-dropdown-trigger:hover {
+      background: var(--bg-card);
+    }
+
+    .arch-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      width: 290px;
+      z-index: 50;
+      padding: 8px;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .arch-dropdown-menu.show {
+      display: flex;
+    }
+
+    .arch-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+
+    .arch-option:hover {
+      background: var(--pale-mint);
+      color: var(--main-green);
+    }
+
+    [data-theme="dark"] .arch-option:hover {
+      background: var(--bg-card);
+    }
+
+    .arch-option-text h5 {
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .arch-option-text p {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+
+    .arch-option-size {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--main-green);
+    }
+
+    /* Trust Meta Icons */
+    .trust-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 960px) {
+      .trust-meta {
+        justify-content: center;
+      }
+    }
+
+    .trust-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Phone Mockup */
+    .phone-column {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .phone-ring-glow {
+      position: absolute;
+      width: 320px;
+      height: 460px;
+      background: radial-gradient(circle, rgba(46, 155, 79, 0.22) 0%, rgba(11, 93, 59, 0) 70%);
+      filter: blur(40px);
+      z-index: -1;
+      border-radius: 50%;
+    }
+
+    .phone-frame {
+      width: 310px;
+      height: 600px;
+      background: var(--bg-surface);
+      border-radius: 44px;
+      border: 9px solid #1c2621;
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 95px;
+      height: 18px;
+      background: #1c2621;
+      border-radius: 12px;
+      z-index: 10;
+    }
+
+    .phone-screen {
+      flex: 1;
+      background: var(--bg-body);
+      padding: 32px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      font-size: 0.85rem;
+      overflow: hidden;
+    }
+
+    .app-screen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2px;
+    }
+
+    .app-greeting {
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .app-title-mock {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .ayah-card-banner {
+      background: linear-gradient(135deg, var(--primary-green), var(--main-green));
+      color: white;
+      border-radius: 18px;
+      padding: 15px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(11, 93, 59, 0.25);
+    }
+
+    .ayah-card-banner::after {
+      content: '';
+      position: absolute;
+      right: -25px;
+      bottom: -25px;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .ayah-tag {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      opacity: 0.9;
+      font-weight: 700;
+    }
+
+    .ayah-arabic {
+      font-size: 1.3rem;
+      line-height: 1.5;
+      margin: 6px 0;
+      font-family: 'Amiri', serif;
+      direction: rtl;
+    }
+
+    .ayah-meaning {
+      font-size: 0.7rem;
+      opacity: 0.9;
+      line-height: 1.3;
+    }
+
+    .surah-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .surah-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .surah-badge {
+      width: 30px;
+      height: 30px;
+      background: var(--light-green);
+      color: var(--primary-green);
+      font-weight: 700;
+      font-size: 0.75rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    [data-theme="dark"] .surah-badge {
+      background: #1E3A2B;
+      color: #69D78F;
+    }
+
+    .surah-text h4 {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .surah-text p {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+    }
+
+    .surah-arabic-title {
+      font-family: 'Amiri', serif;
+      font-size: 1.05rem;
+      color: var(--main-green);
+      font-weight: 700;
+      direction: rtl;
+    }
+
+    .bottom-nav-mock {
+      margin-top: auto;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-around;
+      border-radius: 0 0 32px 32px;
+    }
+
+    .nav-mock-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .nav-mock-item.active {
+      color: var(--main-green);
+    }
+
+    /* Minimal Clean Footer */
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 1.25rem 2rem;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <a href="#" class="brand-group">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Al-Quran</span>
+          <span class="brand-subtitle">The Noble Quran</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <!-- Theme Toggle -->
+        <button class="theme-toggle-btn" id="themeToggle" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg id="moonIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg id="sunIcon" style="display:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Main -->
+  <main class="hero-container">
+    <div class="hero-text-content">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        <span>v1.0.0 Release • 100% Free &amp; Ad-Free</span>
+      </div>
+
+      <div class="arabic-font bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+
+      <h1 class="hero-title">
+        Recite, Reflect &amp; Learn <br>
+        The <span class="highlight">Holy Quran</span>
+      </h1>
+
+      <p class="hero-lead">
+        A fast, beautiful, and distraction-free Quranic app. Featuring elegant typography, multi-reciter audio, daily reflections, and Qibla compass.
+      </p>
+
+      <div class="download-wrapper">
+        <div class="btn-row">
+          <!-- Primary Recommended Download (ARM64 - 18.4 MB) -->
+          <a href="downloads/QuranApp-arm64.apk" download class="btn-primary-download">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.411 13.8566 8.125 12 8.125s-3.5902.286-5.1368.8247L4.8409 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.7844h24c-.3432-4.1255-2.6889-7.5977-6.1185-9.463"/>
+            </svg>
+            <div class="btn-text-block">
+              <span class="sub-label">DOWNLOAD FOR ANDROID</span>
+              <span>Direct APK <span class="size-tag">18.4 MB</span></span>
+            </div>
+          </a>
+
+          <!-- Other Versions Dropdown -->
+          <div class="arch-dropdown">
+            <button class="btn-dropdown-trigger" id="dropdownBtn" type="button">
+              <span>All Versions</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="arch-dropdown-menu" id="dropdownMenu">
+              <a href="downloads/QuranApp-arm64.apk" download class="arch-option">
+                <div class="arch-option-text">
+                  <h5>ARM64 (Recommended)</h5>
+                  <p>For modern phones (2017+)</p>
+                </div>
+                <span class="arch-option-size">18.4 MB</span>
+              </a>
+              <a href="downloads/QuranApp-armv7.apk" download class="arch-option">
+                <div class="arch-option-text">
+                  <h5>ARMv7 (32-bit)</h5>
+                  <p>For older budget devices</p>
+                </div>
+                <span class="arch-option-size">15.9 MB</span>
+              </a>
+              <a href="downloads/QuranApp-universal.apk" download class="arch-option">
+                <div class="arch-option-text">
+                  <h5>Universal APK</h5>
+                  <p>All architectures bundled</p>
+                </div>
+                <span class="arch-option-size">51.3 MB</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="trust-meta">
+          <span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Android 6.0+
+          </span>
+          <span>•</span>
+          <span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            100% Ad-Free
+          </span>
+          <span>•</span>
+          <span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            Works Offline
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone Mockup -->
+    <div class="phone-column">
+      <div class="phone-ring-glow"></div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          
+          <div class="app-screen-header">
+            <div>
+              <div class="app-greeting">Assalamu Alaikum</div>
+              <div class="app-title-mock">The Holy Quran</div>
+            </div>
+            <div style="font-size: 1rem; color: var(--main-green);">✨</div>
+          </div>
+
+          <!-- Banner Card -->
+          <div class="ayah-card-banner">
+            <div class="ayah-tag">Ayah of the Day • Surah Al-Baqarah</div>
+            <div class="ayah-arabic">اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ</div>
+            <div class="ayah-meaning">"Allah! There is no deity except Him, the Ever-Living, the Sustainer of all existence."</div>
+          </div>
+
+          <!-- Surah list preview -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2px;">
+            <span style="font-weight: 700; font-size: 0.8rem; color: var(--text-primary);">Surahs</span>
+            <span style="font-size: 0.68rem; color: var(--main-green); font-weight: 600;">114 Chapters</span>
+          </div>
+
+          <div class="surah-item">
+            <div class="surah-left">
+              <div class="surah-badge">1</div>
+              <div class="surah-text">
+                <h4>Al-Fatihah</h4>
+                <p>The Opening • 7 Ayahs</p>
+              </div>
+            </div>
+            <div class="surah-arabic-title">الفَاتِحَة</div>
+          </div>
+
+          <div class="surah-item">
+            <div class="surah-left">
+              <div class="surah-badge">2</div>
+              <div class="surah-text">
+                <h4>Al-Baqarah</h4>
+                <p>The Cow • 286 Ayahs</p>
+              </div>
+            </div>
+            <div class="surah-arabic-title">البَقَرَة</div>
+          </div>
+
+          <div class="surah-item">
+            <div class="surah-left">
+              <div class="surah-badge">36</div>
+              <div class="surah-text">
+                <h4>Ya-Sin</h4>
+                <p>Heart of Quran • 83 Ayahs</p>
+              </div>
+            </div>
+            <div class="surah-arabic-title">يس</div>
+          </div>
+
+        </div>
+
+        <!-- Phone Navigation -->
+        <div class="bottom-nav-mock">
+          <div class="nav-mock-item active">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            <span>Home</span>
+          </div>
+          <div class="nav-mock-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span>Surahs</span>
+          </div>
+          <div class="nav-mock-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>Reciters</span>
+          </div>
+          <div class="nav-mock-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+            <span>Qibla</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 Al-Quran App. Built with Flutter. 100% Free &amp; Ad-Free.</p>
+  </footer>
+
+  <!-- Script for Theme Toggle & Architecture Dropdown -->
+  <script>
+    // Theme Toggle
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const moonIcon = document.getElementById('moonIcon');
+    const sunIcon = document.getElementById('sunIcon');
+    const htmlElement = document.documentElement;
+
+    function setTheme(theme) {
+      if (theme === 'dark') {
+        htmlElement.setAttribute('data-theme', 'dark');
+        moonIcon.style.display = 'none';
+        sunIcon.style.display = 'block';
+        localStorage.setItem('quran_app_theme', 'dark');
+      } else {
+        htmlElement.removeAttribute('data-theme');
+        moonIcon.style.display = 'block';
+        sunIcon.style.display = 'none';
+        localStorage.setItem('quran_app_theme', 'light');
+      }
+    }
+
+    const savedTheme = localStorage.getItem('quran_app_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    setTheme(savedTheme);
+
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = htmlElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+
+    // Dropdown toggle
+    const dropdownBtn = document.getElementById('dropdownBtn');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    dropdownBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdownMenu.classList.toggle('show');
+    });
+
+    document.addEventListener('click', () => {
+      dropdownMenu.classList.remove('show');
+    });
+  </script>
+</body>
+</html>
